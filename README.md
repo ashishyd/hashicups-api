@@ -16,31 +16,34 @@
 
 Open `terminal` on mac or `powershell` on Windows, or open terminal in visual code
 
-Run the following command `cd packages/iac && npm install`
+Run the following command `pnpm install`
 
 ## Run Hashicups API locally
 
 To execute our app we need to run Hashicups locally, which creates a PostgreSQL database and API to perform CRUD operations
 
-Open new separate terminal and run the following command `cd docker_compose && docker compose up` and keep it running
+Open new separate terminal and run the following command `pnpm run hashicups-start` and keep it running
 
 ## Initial setup
 
-Create a new .env file with variables
+Create a new .env file with variables and corresponding values
 
 ```
-HASHICUPS_USERNAME="yassir_user"
-HASHICUPS_PASSWORD="test@123"
-HASHICUPS_HOST="http://localhost:19090"
-HASHICUPS_ORDERS_FOLDER_NAME="Orders"
+HASHICUPS_USERNAME
+HASHICUPS_PASSWORD
+HASHICUPS_HOST
+HASHICUPS_ORDERS_FOLDER_NAME
 
 ```
 
 Once the docker app is up and running and env file is created, run the following command to setup initial setup.
 
-`npm run setup`
+`pnpm run setup`
 
-As an output you will get token information on the terminal, copy that and run the following command
+The HASHICUPS_TOKEN will be set automatically, verify it with command
+`echo $HASHICUPS_TOKEN`.
+
+If HASHICUPS_TOKEN is not set then copy the token from setup command and set it manually
 
 Windows - `set HASHICUPS_TOKEN={copied_token}`
 
@@ -50,11 +53,11 @@ Mac - `export HASHICUPS_TOKEN={copied_token}`
 
 To generate terraform providers run command
 
-`cdktf get`
+`pnpm run get`
 
 To create terraform state
 
-`cdktf deploy --auto-approve`
+`pnpm run deploy`
 
 ## CRUD setup
 
@@ -112,3 +115,7 @@ we have a watch folder script which can detect changes and run deploy command, m
 Open new separate terminal and run command `npm run watch-orders` and keep it running
 
 **_I have created my own provider as the one provided by the harshicorp does not support M1 mac, you can find provider with name `ashishyd/haschicups`_**
+
+## final clean up
+
+Press Ctrl+C to exit the running hashicups docker container then run command `pnpm run hashicups-stop`

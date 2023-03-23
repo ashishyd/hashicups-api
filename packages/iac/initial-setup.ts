@@ -1,10 +1,25 @@
-import axios from "axios";
-import * as fs from "fs";
-import { UserLogin } from "./interfaces/user_login";
+import axios from 'axios';
+import * as fs from 'fs';
+import { UserLogin } from './interfaces/user_login';
+import dotenv from 'dotenv';
+dotenv.config({ path: './../../.env' });
 
-function initialSetup() {
+const header = { headers: { 'Content-Type': 'application/json' } };
+
+const jsonData = {
+  username: `${process.env.HASHICUPS_USERNAME || 'yassir_user'}`,
+  password: `${process.env.HASHICUPS_PASSWORD || 'test@123'}`,
+};
+const data = JSON.stringify(jsonData);
+
+/**
+ * It creates a folder called `Orders` if it doesn't exist, then creates two folders inside it called
+ * `order-1` and `order-2` if they don't exist, then creates four files inside those folders called
+ * `1.json` and `2.json` if they don't exist, then creates a user if it doesn't exist, then signs in
+ */
+function initialSetup(): void {
   const directoryPath = `./${
-    process.env.HASHICUPS_ORDERS_FOLDER_NAME || "Orders"
+    process.env.HASHICUPS_ORDERS_FOLDER_NAME || 'Orders'
   }`;
 
   if (!fs.existsSync(directoryPath)) {
@@ -69,28 +84,30 @@ function initialSetup() {
     });
   }
 
-  // const hostUrl = process.env.HASHICUPS_HOST || `http://localhost:19090`;
-  const jsonData = {
-    username: `${process.env.HASHICUPS_USERNAME || "yassir_user"}`,
-    password: `${process.env.HASHICUPS_PASSWORD || "test@123"}`,
-  };
-  const config = { headers: { "Content-Type": "application/json" } };
   axios
-    .post(`http://127.0.0.1:19090/signup`, JSON.stringify(jsonData), config)
-    .then(() => {
-      return axios
-        .post<UserLogin>(
-          `http://127.0.0.1:19090/signin`,
-          JSON.stringify(jsonData),
-          config,
-        )
-        .then((response) => {
-          console.log(`token: ${response.data.token}`);
-        });
-    })
+    .post(`http://127.0.0.1:19090/signup`, data, header)
+    .then(() => signIn())
     .catch((error) => {
-      console.log(error);
+      if (error.response.data.indexOf('User already exists') > -1) {
+        return signIn();
+      } else {
+        console.error(error);
+      }
     });
 }
+
+/**
+ * It sends a POST request to the signin endpoint with the data and header objects, and then logs the
+ * token to the console
+ */
+const signIn = async (): Promise<void> => {
+  const response = await axios.post<UserLogin>(
+    `http://127.0.0.1:19090/signin`,
+    data,
+    header
+  );
+  console.log(`token: ${response.data.token}`);
+  process.env.HASHICUPS_TOKEN = response.data.token;
+};
 
 initialSetup();

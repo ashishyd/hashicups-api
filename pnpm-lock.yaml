@@ -10,6 +10,7 @@ importers:
       '@typescript-eslint/parser': ^5.48.2
       cdktf: ^0.15.5
       constructs: ^10.1.265
+      dotenv: ^16.0.3
       eslint: ^8.32.0
       eslint-config-prettier: ^8.6.0
       jest: ^29.4.3
@@ -25,6 +26,7 @@ importers:
       '@types/node': 18.14.4
       '@typescript-eslint/eslint-plugin': 5.54.0_6mj2wypvdnknez7kws2nfdgupi
       '@typescript-eslint/parser': 5.54.0_ycpbpc6yetojsgtrx3mwntkhsu
+      dotenv: 16.0.3
       eslint: 8.35.0
       eslint-config-prettier: 8.6.0_eslint@8.35.0
       jest: 29.4.3_jcb3wguyhnpyd5azbry5ackz4u
@@ -1496,6 +1498,11 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
+    dev: true
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: true
 
   /electron-to-chromium/1.4.315:

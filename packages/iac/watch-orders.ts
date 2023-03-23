@@ -1,6 +1,6 @@
-import { spawn } from "child_process";
-import * as fs from "fs";
-import * as path from "path";
+import { spawn } from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // const filePath = './orders.json';
 
@@ -21,6 +21,11 @@ import * as path from "path";
 //   });
 // });
 
+/**
+ * It watches a folder and its subfolders for changes to any file, and if a file is changed, it runs a
+ * command
+ * @param {string} folder - the folder to watch
+ */
 function watchFolder(folder: string) {
   fs.readdir(folder, { withFileTypes: true }, (err, files) => {
     if (err) throw err;
@@ -33,21 +38,21 @@ function watchFolder(folder: string) {
       } else {
         fs.watchFile(filePath, (curr, prev) => {
           if (curr.mtime !== prev.mtime) {
-            fs.readFile(filePath, "utf8", (err, data) => {
+            fs.readFile(filePath, 'utf8', (err, data) => {
               if (err) throw err;
               if (data.length > 0) {
-                const cmd = spawn("cdktf", ["deploy"], { stdio: "inherit" });
+                const cmd = spawn('pnpm', ['run deploy'], { stdio: 'inherit' });
                 cmd.stdout &&
-                  cmd.stdout.on("data", (data: string) => {
+                  cmd.stdout.on('data', (data: string) => {
                     console.log(`stdout: ${data}`);
                   });
 
                 cmd.stderr &&
-                  cmd.stderr.on("data", (data: string) => {
+                  cmd.stderr.on('data', (data: string) => {
                     console.error(`stderr: ${data}`);
                   });
 
-                cmd.on("close", (code: string) => {
+                cmd.on('close', (code: string) => {
                   console.log(`child process exited with code ${code}`);
                 });
               }
@@ -59,4 +64,4 @@ function watchFolder(folder: string) {
   });
 }
 
-watchFolder(`./${process.env.HASHICUPS_ORDERS_FOLDER_NAME || "Orders"}`);
+watchFolder(`./${process.env.HASHICUPS_ORDERS_FOLDER_NAME || 'Orders'}`);
